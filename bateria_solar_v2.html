@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bateria Solar">
+<meta name="theme-color" content="#0a1628">
+<link rel="manifest" href="manifest.json">
+<title>⚡ Bateria Solar v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080f1e;
+    --surface: #0d1a2e;
+    --surface2: #112240;
+    --border: #1e3a5f;
+    --accent: #00d4ff;
+    --accent2: #00ff88;
+    --accent3: #ffaa00;
+    --danger: #ff4444;
+    --text: #e8f4ff;
+    --muted: #5a7a9a;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 0 50px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo { display: flex; align-items: center; gap: 10px; }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 1px; }
+  .version-badge {
+    font-size: 9px; font-family: var(--mono);
+    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,255,136,0.2));
+    border: 1px solid rgba(0,212,255,0.4);
+    color: var(--accent); padding: 2px 6px; border-radius: 10px; margin-left: 6px;
+  }
+
+  .settings-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 12px; border-radius: 8px;
+    font-size: 12px; cursor: pointer; font-family: var(--mono); transition: all 0.2s;
+  }
+  .settings-btn:active { transform: scale(0.95); }
+  .settings-btn.active { color: var(--accent); border-color: var(--accent); }
+
+  /* IMPORT SECTION */
+  .import-section {
+    padding: 10px 16px 0;
+  }
+
+  .import-title {
+    font-size: 10px; font-family: var(--mono); letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+  }
+
+  .import-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .import-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .import-card-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .import-card-icon { font-size: 16px; }
+
+  .import-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 10px;
+    font-family: var(--mono);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .import-link:active { transform: scale(0.97); border-color: var(--accent); color: var(--accent); }
+
+  .ocr-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 8px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,255,136,0.1));
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    font-family: var(--mono);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .ocr-btn:active { transform: scale(0.97); background: rgba(0,212,255,0.2); }
+  .ocr-btn.car { border-color: rgba(0,255,136,0.3); color: var(--accent2); background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,212,255,0.08)); }
+  .ocr-btn.car:active { background: rgba(0,255,136,0.2); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text);
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--accent2); color: var(--accent2); }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+  .toast.info { border-color: var(--accent); color: var(--accent); }
+
+  /* OCR MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 380px;
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  .modal-desc {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .modal-desc strong { color: var(--accent); }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .drop-zone:active, .drop-zone.dragover { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .drop-zone.car-zone:active, .drop-zone.car-zone.dragover { border-color: var(--accent2); background: rgba(0,255,136,0.05); }
+
+  .drop-zone-icon { font-size: 32px; margin-bottom: 8px; }
+  .drop-zone-text { font-size: 12px; color: var(--muted); font-family: var(--mono); line-height: 1.5; }
+  .drop-zone-text strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 4px; }
+
+  #ocrFileInput, #ocrFileInputCar { display: none; }
+
+  .preview-wrap {
+    display: none;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .preview-wrap img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    background: #000;
+    display: block;
+  }
+
+  .ocr-progress {
+    display: none;
+    text-align: center;
+    padding: 12px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--accent);
+  }
+
+  .ocr-result-wrap {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .ocr-result-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 6px;
+  }
+
+  .ocr-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .ocr-number-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ocr-number-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ocr-number-btn.car-target:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .manual-ocr-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .manual-ocr-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 16px;
+    padding: 8px 12px;
+    outline: none;
+    text-align: center;
+  }
+  .manual-ocr-input:focus { border-color: var(--accent); }
+
+  .apply-btn {
+    padding: 8px 14px;
+    background: linear-gradient(135deg, var(--accent), #0088cc);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--sans);
+    white-space: nowrap;
+  }
+  .apply-btn.car { background: linear-gradient(135deg, var(--accent2), #00aa55); }
+  .apply-btn:active { transform: scale(0.95); }
+
+  /* SECTION LABEL */
+  .section-label {
+    padding: 14px 16px 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* INPUT CARDS */
+  .input-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .input-card.focused { border-color: var(--accent); }
+  .input-card.car-card.focused { border-color: var(--accent2); }
+  .input-card.consumption-card.focused { border-color: var(--accent3); }
+
+  .card-top {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 12px;
+  }
+
+  .card-label {
+    display: flex; align-items: center;
+    gap: 8px; font-size: 13px; font-weight: 700; color: var(--text);
+  }
+
+  .card-icon { font-size: 18px; line-height: 1; }
+  .card-unit { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  .input-row { display: flex; align-items: center; gap: 8px; }
+
+  .btn-pm {
+    width: 44px; height: 44px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text); font-size: 20px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; flex-shrink: 0; user-select: none;
+  }
+  .btn-pm:active { transform: scale(0.9); background: var(--border); }
+  .house-card .btn-pm:active { background: rgba(0,212,255,0.2); border-color: var(--accent); }
+  .car-card .btn-pm:active { background: rgba(0,255,136,0.2); border-color: var(--accent2); }
+  .consumption-card .btn-pm:active { background: rgba(255,170,0,0.2); border-color: var(--accent3); }
+
+  .value-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; text-align: center; font-family: var(--mono);
+    font-size: 28px; font-weight: 700; color: var(--text);
+    height: 54px; outline: none; width: 100%; -moz-appearance: textfield;
+  }
+  .value-input::-webkit-inner-spin-button,
+  .value-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .house-card .value-input:focus { border-color: var(--accent); color: var(--accent); }
+  .car-card .value-input:focus { border-color: var(--accent2); color: var(--accent2); }
+  .consumption-card .value-input:focus { border-color: var(--accent3); color: var(--accent3); }
+
+  .mini-bar-wrap { margin-top: 10px; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .house-card .mini-bar-fill { background: linear-gradient(90deg, var(--accent), #0066ff); }
+  .car-card .mini-bar-fill { background: linear-gradient(90deg, var(--accent2), #00aa55); }
+
+  /* RESULT */
+  .result-section { padding: 12px 16px 0; }
+
+  .result-card {
+    background: linear-gradient(135deg, #0a1628 0%, #0d2444 100%);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 20px; position: relative; overflow: hidden;
+  }
+
+  .result-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .result-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .result-label { font-size: 11px; font-family: var(--mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .result-status { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); }
+  .status-ok { background: rgba(0,255,136,0.15); color: var(--accent2); border: 1px solid rgba(0,255,136,0.3); }
+  .status-partial { background: rgba(255,170,0,0.15); color: var(--accent3); border: 1px solid rgba(255,170,0,0.3); }
+  .status-none { background: rgba(255,68,68,0.15); color: var(--danger); border: 1px solid rgba(255,68,68,0.3); }
+
+  .result-big { font-size: 72px; font-weight: 800; font-family: var(--mono); line-height: 1; margin-bottom: 4px; transition: color 0.3s; }
+  .result-sub { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-bottom: 16px; }
+
+  .car-battery-wrap { background: var(--surface2); border-radius: 8px; height: 28px; position: relative; overflow: hidden; margin-bottom: 4px; border: 1px solid var(--border); }
+  .car-battery-current { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 7px 0 0 7px; background: rgba(0,255,136,0.25); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .car-battery-added { position: absolute; top: 0; bottom: 0; background: linear-gradient(90deg, var(--accent2), #00cc66); border-radius: 0 7px 7px 0; transition: left 0.5s cubic-bezier(0.4,0,0.2,1), width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .car-battery-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; font-weight: 700; color: white; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+  .battery-legend { display: flex; gap: 12px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); font-family: var(--mono); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
+  .stat-value { font-size: 16px; font-weight: 700; font-family: var(--mono); color: var(--text); margin-bottom: 2px; }
+  .stat-label { font-size: 9px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.5px; line-height: 1.3; }
+
+  /* HOUSE BAR */
+  .house-bar-section { padding: 12px 16px 0; }
+  .house-bar-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; }
+  .house-bar-title { font-size: 11px; font-family: var(--mono); color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .house-battery-wrap { height: 24px; background: var(--surface2); border-radius: 6px; position: relative; overflow: hidden; border: 1px solid var(--border); margin-bottom: 6px; }
+  .house-bat-current { position: absolute; top:0; left:0; bottom:0; background: linear-gradient(90deg, var(--accent), #0088cc); border-radius: 5px 0 0 5px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .house-bat-used { position: absolute; top:0; bottom:0; background: rgba(255,170,0,0.4); transition: left 0.5s, width 0.5s; }
+  .house-bat-reserve { position: absolute; top:0; right:0; bottom:0; background: rgba(255,68,68,0.3); border-left: 1px dashed rgba(255,68,68,0.5); transition: width 0.5s; }
+  .house-bat-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.6); z-index: 1; }
+  .house-stat-row { display: flex; justify-content: space-between; margin-top: 8px; }
+  .house-stat { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  .house-stat span { color: var(--text); font-weight: 700; }
+
+  /* SETTINGS */
+  .settings-panel { display: none; padding: 0 16px; margin-top: 12px; }
+  .settings-panel.open { display: block; }
+  .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+  .settings-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: var(--accent); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-name { font-size: 12px; color: var(--text); }
+  .setting-desc { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+  .setting-right { display: flex; align-items: center; gap: 6px; }
+  .setting-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 14px; font-weight: 700; text-align: center; width: 70px; padding: 6px; outline: none; }
+  .setting-input:focus { border-color: var(--accent); }
+  .setting-unit { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  /* INSTALL */
+  .install-banner { margin: 10px 16px 0; background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,255,136,0.1)); border: 1px solid rgba(0,212,255,0.3); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .install-banner-text { font-size: 11px; color: var(--text); line-height: 1.4; }
+  .install-banner-text strong { color: var(--accent); }
+  .install-btn { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 8px; color: #000; font-weight: 800; font-size: 11px; padding: 8px 12px; cursor: pointer; white-space: nowrap; font-family: var(--sans); flex-shrink: 0; }
+  .install-btn:active { transform: scale(0.95); }
+  .dismiss-btn { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 0 4px; flex-shrink: 0; }
+
+  .footer { padding: 20px 16px 0; text-align: center; font-size: 10px; color: var(--muted); font-family: var(--mono); line-height: 1.6; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-icon">⚡</div>
+      <div>
+        <div class="logo-text">Bateria Solar <span class="version-badge">v2.0</span></div>
+        <div class="logo-sub">Aiko 610W · Deye 5K</div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsToggle">⚙ CONFIG</button>
+  </div>
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="installBanner" style="display:none;">
+    <div class="install-banner-text"><strong>Instalar app</strong><br>Adicionar ao ecrã inicial</div>
+    <button class="install-btn" id="installBtn">Instalar</button>
+    <button class="dismiss-btn" id="dismissBanner">✕</button>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-card">
+      <h3>⚙ Configuração do sistema</h3>
+      <div class="setting-row">
+        <div><div class="setting-name">Bateria casa</div><div class="setting-desc">Capacidade total</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_houseCap" value="16" step="0.1"><span class="setting-unit">kWh</span></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-name">Painéis Aiko</div><div class="setting-desc">Quantidade</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_panels" value="9"><span class="setting-unit">un</span></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-name">Potência painel</div><div class="setting-desc">Aiko</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_panelW" value="610"><span class="setting-unit">W</span></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-name">Inversor Deye</div><div class="setting-desc">Potência máxima</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_deye" value="5" step="0.1"><span class="setting-unit">kW</span></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-name">Bateria carro</div><div class="setting-desc">Capacidade total</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_carCap" value="14.4" step="0.1"><span class="setting-unit">kWh</span></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-name">Reserva mínima</div><div class="setting-desc">% mínima a manter</div></div>
+        <div class="setting-right"><input class="setting-input" type="number" id="cfg_reserve" value="30"><span class="setting-unit">%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT / OCR SECTION -->
+  <div class="import-section">
+    <div class="import-title">📥 importar valor automaticamente</div>
+    <div class="import-grid">
+
+      <!-- Casa / SolarMan -->
+      <div class="import-card">
+        <div class="import-card-title"><span class="import-card-icon">🏠</span> Bateria Casa</div>
+        <a class="import-link" href="https://home.solarmanpv.com/" target="_blank">☀️ Abrir SolarMan</a>
+        <button class="ocr-btn" id="ocrHouseBtn">📷 Ler screenshot</button>
+        <input type="file" id="ocrFileInput" accept="image/*">
+      </div>
+
+      <!-- Carro / Ford -->
+      <div class="import-card">
+        <div class="import-card-title"><span class="import-card-icon">🚗</span> Bateria Carro</div>
+        <a class="import-link" href="https://www.ford.com/fordpass/fordpass-app/" target="_blank">🚙 Abrir FordPass</a>
+        <button class="ocr-btn car" id="ocrCarBtn">📷 Ler screenshot</button>
+        <input type="file" id="ocrFileInputCar" accept="image/*">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section-label">INSERIR VALORES ATUAIS</div>
+
+  <div class="input-cards">
+    <!-- Casa -->
+    <div class="input-card house-card" id="houseCard">
+      <div class="card-top">
+        <div class="card-label"><span class="card-icon">🏠</span>Bateria Casa</div>
+        <span class="card-unit" id="houseKwh">— kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="houseMinus">−</button>
+        <input class="value-input" type="number" id="houseInput" value="80" min="0" max="100" inputmode="numeric">
+        <button class="btn-pm" id="housePlus">+</button>
+      </div>
+      <div class="mini-bar-wrap"><div class="mini-bar-fill" id="houseMiniBar" style="width:80%"></div></div>
+    </div>
+
+    <!-- Carro -->
+    <div class="input-card car-card" id="carCard">
+      <div class="card-top">
+        <div class="card-label"><span class="card-icon">🔋</span>Bateria Carro</div>
+        <span class="card-unit" id="carKwh">— kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="carMinus">−</button>
+        <input class="value-input" type="number" id="carInput" value="20" min="0" max="100" inputmode="numeric">
+        <button class="btn-pm" id="carPlus">+</button>
+      </div>
+      <div class="mini-bar-wrap"><div class="mini-bar-fill" id="carMiniBar" style="width:20%; background: linear-gradient(90deg, var(--accent2), #00aa55);"></div></div>
+    </div>
+
+    <!-- Consumo -->
+    <div class="input-card consumption-card" id="consumCard">
+      <div class="card-top">
+        <div class="card-label"><span class="card-icon">🏡</span>Consumo Casa Previsto</div>
+        <span class="card-unit">kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="consumMinus">−</button>
+        <input class="value-input" type="number" id="consumInput" value="0.20" min="0" max="50" step="0.1" inputmode="decimal">
+        <button class="btn-pm" id="consumPlus">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-section">
+    <div class="result-card">
+      <div class="result-top">
+        <div><div class="result-label">Bateria carro após carga</div></div>
+        <div class="result-status status-ok" id="statusBadge">✓ COMPLETA</div>
+      </div>
+      <div class="result-big" id="resultPct">—%</div>
+      <div class="result-sub" id="resultSub">—</div>
+      <div class="car-battery-wrap">
+        <div class="car-battery-current" id="carBatCurrent"></div>
+        <div class="car-battery-added" id="carBatAdded"></div>
+        <div class="car-battery-label" id="carBatLabel"></div>
+      </div>
+      <div class="battery-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(0,255,136,0.3);"></div>Atual</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent2);"></div>A adicionar</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item"><div class="stat-value" id="stat1">—</div><div class="stat-label">kWh<br>transferidos</div></div>
+        <div class="stat-item"><div class="stat-value" id="stat2">—</div><div class="stat-label">% casa<br>após carga</div></div>
+        <div class="stat-item"><div class="stat-value" id="stat3">—</div><div class="stat-label">kWh<br>livres casa</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOUSE BAR -->
+  <div class="house-bar-section">
+    <div class="house-bar-card">
+      <div class="house-bar-title">🏠 Bateria casa — detalhe</div>
+      <div class="house-battery-wrap">
+        <div class="house-bat-current" id="houseBatCurrent"></div>
+        <div class="house-bat-used" id="houseBatUsed"></div>
+        <div class="house-bat-reserve" id="houseBatReserve"></div>
+        <div class="house-bat-label" id="houseBatLabel"></div>
+      </div>
+      <div class="battery-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div>Energia total</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,170,0,0.5);"></div>Consumo + carga</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,68,68,0.4);"></div>Reserva 30%</div>
+      </div>
+      <div class="house-stat-row">
+        <div class="house-stat">Total: <span id="hs_total">—</span></div>
+        <div class="house-stat">Disponível: <span id="hs_avail">—</span></div>
+        <div class="house-stat">Reserva: <span id="hs_reserve">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    9 × Aiko 610W = 5.49 kW · Inversor Deye 5K<br>
+    Bateria casa 16 kWh · Plug-in híbrido 14.4 kWh<br><br>
+    <span style="opacity:0.4">v2.0 — Share Target + OCR</span>
+  </div>
+</div>
+
+<!-- OCR MODAL -->
+<div class="modal-overlay" id="ocrModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">📷 Ler screenshot</div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+
+    <div class="modal-desc">
+      <strong>Como usar:</strong><br>
+      1. Abre a <strong>SolarMan</strong> ou <strong>FordPass</strong><br>
+      2. Faz um <strong>screenshot</strong> (botão lateral + volume)<br>
+      3. Toca em "Escolher imagem" e seleciona o screenshot<br>
+      4. A app tenta ler a % automaticamente — se não detetar, introduz manualmente
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-zone-icon">📁</div>
+      <div class="drop-zone-text">
+        <strong>Escolher imagem</strong>
+        Toca para selecionar o screenshot
+      </div>
+    </div>
+
+    <div class="preview-wrap" id="previewWrap">
+      <img id="previewImg" src="" alt="preview">
+    </div>
+
+    <div class="ocr-progress" id="ocrProgress">
+      <span class="spinner"></span> A analisar imagem...
+    </div>
+
+    <div class="ocr-result-wrap" id="ocrResultWrap">
+      <div class="ocr-result-label" id="ocrResultLabel">Percentagens detetadas — toca para aplicar:</div>
+      <div class="ocr-numbers" id="ocrNumbers"></div>
+      <div style="font-size:10px; color:var(--muted); font-family:var(--mono); margin-bottom:8px;">Ou introduz manualmente:</div>
+      <div class="manual-ocr-row">
+        <input class="manual-ocr-input" type="number" id="manualOcrInput" placeholder="ex: 75" min="0" max="100" inputmode="numeric">
+        <button class="apply-btn" id="applyManualBtn">Aplicar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Tesseract.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────
+const cfg = { houseCap:16, panels:9, panelW:610, deye:5, carCap:14.4, reserve:30 };
+
+function loadConfig() {
+  try { const s = localStorage.getItem('bateriaConfig'); if(s) Object.assign(cfg, JSON.parse(s)); } catch(e){}
+  Object.keys(cfg).forEach(k => { const el = document.getElementById('cfg_'+k); if(el) el.value = cfg[k]; });
+}
+
+function saveConfig() {
+  Object.keys(cfg).forEach(k => { const el = document.getElementById('cfg_'+k); if(el) cfg[k] = parseFloat(el.value)||cfg[k]; });
+  try { localStorage.setItem('bateriaConfig', JSON.stringify(cfg)); } catch(e){}
+  calculate();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type='info', duration=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, duration);
+}
+
+// ── INPUTS ─────────────────────────────────────────────────────────────
+function clamp(v,min,max){ return Math.min(Math.max(v,min),max); }
+function r2(v){ return Math.round(v*100)/100; }
+
+function setupPlusMinus(inputId, minusId, plusId, min, max, step, onchange) {
+  const inp = document.getElementById(inputId);
+  const minus = document.getElementById(minusId);
+  const plus = document.getElementById(plusId);
+  minus.addEventListener('click', () => { inp.value = r2(clamp(r2(parseFloat(inp.value||0)-step),min,max)); onchange(); });
+  plus.addEventListener('click',  () => { inp.value = r2(clamp(r2(parseFloat(inp.value||0)+step),min,max)); onchange(); });
+  inp.addEventListener('input', onchange);
+  inp.addEventListener('blur', () => { inp.value = r2(clamp(parseFloat(inp.value||0),min,max)); onchange(); });
+  inp.addEventListener('focus', () => inp.select());
+}
+
+function setupLongPress(btnId, inputId, delta, min, max) {
+  const btn = document.getElementById(btnId);
+  const inp = document.getElementById(inputId);
+  let interval, timeout;
+  function start() {
+    timeout = setTimeout(() => {
+      interval = setInterval(() => { inp.value = r2(clamp(r2(parseFloat(inp.value||0)+delta),min,max)); calculate(); }, 80);
+    }, 400);
+  }
+  function stop() { clearTimeout(timeout); clearInterval(interval); }
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('touchstart', (e)=>{ e.preventDefault(); start(); }, {passive:false});
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('touchend', stop);
+}
+
+// ── CALCULATE ─────────────────────────────────────────────────────────
+function calculate() {
+  const housePct = clamp(parseFloat(document.getElementById('houseInput').value)||0, 0, 100);
+  const carPct   = clamp(parseFloat(document.getElementById('carInput').value)||0, 0, 100);
+  const consum   = clamp(parseFloat(document.getElementById('consumInput').value)||0, 0, 999);
+  const houseCap = cfg.houseCap, carCap = cfg.carCap, reservePct = cfg.reserve;
+
+  const houseEnergy   = houseCap * housePct / 100;
+  const reserveEnergy = houseCap * reservePct / 100;
+  const carEnergy     = carCap * carPct / 100;
+  const carFree       = carCap - carEnergy;
+  const availableForCar = Math.max(0, houseEnergy - reserveEnergy - consum);
+  const transferred     = Math.min(availableForCar, carFree);
+  const finalCarPct     = Math.min(100, carPct + (transferred/carCap*100));
+  const houseAfterPct   = Math.max(reservePct, (houseEnergy-consum-transferred)/houseCap*100);
+  const houseAfterKwh   = houseCap * houseAfterPct / 100;
+
+  document.getElementById('houseKwh').textContent = houseEnergy.toFixed(1)+' kWh';
+  document.getElementById('carKwh').textContent   = carEnergy.toFixed(1)+' kWh';
+  document.getElementById('houseMiniBar').style.width = housePct+'%';
+  document.getElementById('carMiniBar').style.width   = carPct+'%';
+
+  const resultEl = document.getElementById('resultPct');
+  resultEl.textContent = finalCarPct.toFixed(1)+'%';
+  if (finalCarPct>=80) resultEl.style.color='var(--accent2)';
+  else if (finalCarPct>=50) resultEl.style.color='var(--accent)';
+  else if (finalCarPct>=30) resultEl.style.color='var(--accent3)';
+  else resultEl.style.color='var(--danger)';
+
+  document.getElementById('resultSub').textContent =
+    transferred.toFixed(2)+' kWh adicionados · '+carEnergy.toFixed(1)+' → '+(carEnergy+transferred).toFixed(1)+' kWh';
+
+  const badge = document.getElementById('statusBadge');
+  if (availableForCar<=0) { badge.textContent='✕ SEM ENERGIA'; badge.className='result-status status-none'; }
+  else if (transferred>=carFree-0.01) { badge.textContent='✓ COMPLETA'; badge.className='result-status status-ok'; }
+  else { badge.textContent='⚡ PARCIAL'; badge.className='result-status status-partial'; }
+
+  const curW = carPct, addW = (transferred/carCap*100);
+  document.getElementById('carBatCurrent').style.width = curW+'%';
+  document.getElementById('carBatAdded').style.left  = curW+'%';
+  document.getElementById('carBatAdded').style.width = addW+'%';
+  document.getElementById('carBatLabel').textContent  = carPct.toFixed(0)+'% → '+finalCarPct.toFixed(1)+'%';
+
+  document.getElementById('stat1').textContent = transferred.toFixed(2);
+  document.getElementById('stat2').textContent = houseAfterPct.toFixed(1)+'%';
+  document.getElementById('stat3').textContent = houseAfterKwh.toFixed(2);
+
+  document.getElementById('houseBatCurrent').style.width = housePct+'%';
+  const consumPct2 = (consum/houseCap*100), transferPct2 = (transferred/houseCap*100);
+  const usedStart = housePct-consumPct2-transferPct2, usedW = consumPct2+transferPct2;
+  if (usedW>0 && usedStart>=0) { document.getElementById('houseBatUsed').style.left=usedStart+'%'; document.getElementById('houseBatUsed').style.width=usedW+'%'; }
+  else { document.getElementById('houseBatUsed').style.width='0'; }
+  document.getElementById('houseBatReserve').style.width = reservePct+'%';
+  document.getElementById('houseBatLabel').textContent = housePct.toFixed(0)+'% → '+houseAfterPct.toFixed(1)+'%';
+  document.getElementById('hs_total').textContent   = houseEnergy.toFixed(2)+' kWh';
+  document.getElementById('hs_avail').textContent   = availableForCar.toFixed(2)+' kWh';
+  document.getElementById('hs_reserve').textContent = reserveEnergy.toFixed(2)+' kWh';
+
+  try { localStorage.setItem('bateriaInputs', JSON.stringify({housePct,carPct,consum})); } catch(e){}
+}
+
+// ── OCR ───────────────────────────────────────────────────────────────
+let currentOcrTarget = 'house'; // 'house' or 'car'
+
+function openOcrModal(target) {
+  currentOcrTarget = target;
+  document.getElementById('ocrModal').classList.add('open');
+  document.getElementById('modalTitle').textContent = target==='house' ? '📷 Ler screenshot — Bateria Casa' : '📷 Ler screenshot — Bateria Carro';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('ocrProgress').style.display = 'none';
+  document.getElementById('ocrResultWrap').style.display = 'none';
+  document.getElementById('previewImg').src = '';
+  document.getElementById('manualOcrInput').value = '';
+  const applyBtn = document.getElementById('applyManualBtn');
+  applyBtn.className = 'apply-btn' + (target==='car' ? ' car' : '');
+  const dz = document.getElementById('dropZone');
+  dz.className = 'drop-zone' + (target==='car' ? ' car-zone' : '');
+}
+
+function closeOcrModal() {
+  document.getElementById('ocrModal').classList.remove('open');
+}
+
+function applyOcrValue(val) {
+  const v = clamp(Math.round(parseFloat(val)), 0, 100);
+  if (isNaN(v)) { showToast('Valor inválido', 'error'); return; }
+  if (currentOcrTarget === 'house') {
+    document.getElementById('houseInput').value = v;
+    showToast('✓ Bateria casa: '+v+'%', 'success');
+  } else {
+    document.getElementById('carInput').value = v;
+    showToast('✓ Bateria carro: '+v+'%', 'success');
+  }
+  calculate();
+  closeOcrModal();
+}
+
+function extractPercentages(text) {
+  // Find all numbers followed by % or near % signs, also standalone numbers 0-100
+  const matches = [];
+  // Pattern: number% or number %
+  const pctPattern = /(\d{1,3}(?:[.,]\d+)?)\s*%/g;
+  let m;
+  while ((m = pctPattern.exec(text)) !== null) {
+    const v = parseFloat(m[1].replace(',','.'));
+    if (v >= 0 && v <= 100) matches.push(Math.round(v));
+  }
+  // Also look for standalone integers that look like battery percentages (1-100)
+  if (matches.length === 0) {
+    const numPattern = /\b(\d{1,3})\b/g;
+    while ((m = numPattern.exec(text)) !== null) {
+      const v = parseInt(m[1]);
+      if (v >= 1 && v <= 100) matches.push(v);
+    }
+  }
+  return [...new Set(matches)].sort((a,b) => b-a);
+}
+
+async function runOcr(file) {
+  document.getElementById('ocrProgress').style.display = 'block';
+  document.getElementById('ocrResultWrap').style.display = 'none';
+
+  try {
+    const result = await Tesseract.recognize(file, 'por+eng', {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          document.getElementById('ocrProgress').innerHTML =
+            '<span class="spinner"></span> A analisar... ' + Math.round(m.progress*100) + '%';
+        }
+      }
+    });
+
+    document.getElementById('ocrProgress').style.display = 'none';
+    const text = result.data.text;
+    const percentages = extractPercentages(text);
+
+    const resultWrap = document.getElementById('ocrResultWrap');
+    const numbersDiv = document.getElementById('ocrNumbers');
+    resultWrap.style.display = 'block';
+
+    if (percentages.length > 0) {
+      document.getElementById('ocrResultLabel').textContent = 'Percentagens detetadas — toca para aplicar:';
+      numbersDiv.innerHTML = '';
+      percentages.slice(0,8).forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'ocr-number-btn' + (currentOcrTarget==='car' ? ' car-target' : '');
+        btn.textContent = p + '%';
+        btn.addEventListener('click', () => applyOcrValue(p));
+        numbersDiv.appendChild(btn);
+      });
+    } else {
+      document.getElementById('ocrResultLabel').textContent = 'Não foi possível detetar % na imagem. Introduz manualmente:';
+      numbersDiv.innerHTML = '';
+    }
+  } catch(err) {
+    document.getElementById('ocrProgress').style.display = 'none';
+    document.getElementById('ocrResultWrap').style.display = 'block';
+    document.getElementById('ocrResultLabel').textContent = 'Erro ao processar imagem. Introduz manualmente:';
+    document.getElementById('ocrNumbers').innerHTML = '';
+    console.error('OCR error:', err);
+  }
+}
+
+function handleImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) { showToast('Seleciona uma imagem', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const pw = document.getElementById('previewWrap');
+    const pi = document.getElementById('previewImg');
+    pi.src = e.target.result;
+    pw.style.display = 'block';
+    runOcr(file);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── SHARE TARGET (receber texto partilhado) ───────────────────────────
+function handleSharedText(text) {
+  if (!text) return;
+  const percentages = extractPercentages(text);
+  if (percentages.length === 0) {
+    showToast('Não encontrei % no texto partilhado', 'error', 4000);
+    return;
+  }
+
+  // Try to detect context: "house/solar/bateria casa" vs "car/ford/ev"
+  const lower = text.toLowerCase();
+  const isCarContext = /ford|carro|ev|electric|vehicle|plug|kwh.*car|state of charge|soc/i.test(lower);
+  const isHouseContext = /solar|solarman|deye|casa|home|bateria.*casa|inversor/i.test(lower);
+
+  const val = percentages[0];
+
+  if (isCarContext && !isHouseContext) {
+    document.getElementById('carInput').value = val;
+    showToast('🚗 Bateria carro: '+val+'% (via partilha)', 'success', 4000);
+  } else if (isHouseContext && !isCarContext) {
+    document.getElementById('houseInput').value = val;
+    showToast('🏠 Bateria casa: '+val+'% (via partilha)', 'success', 4000);
+  } else {
+    // Ambiguous — show choice
+    openOcrModal('house');
+    setTimeout(() => {
+      const rw = document.getElementById('ocrResultWrap');
+      rw.style.display = 'block';
+      document.getElementById('ocrResultLabel').textContent = 'Texto partilhado — seleciona o valor e destino:';
+      const nd = document.getElementById('ocrNumbers');
+      nd.innerHTML = '';
+      percentages.slice(0,6).forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'ocr-number-btn';
+        btn.textContent = p+'%';
+        btn.addEventListener('click', () => applyOcrValue(p));
+        nd.appendChild(btn);
+      });
+    }, 100);
+    return;
+  }
+  calculate();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+loadConfig();
+
+try {
+  const saved = JSON.parse(localStorage.getItem('bateriaInputs')||'{}');
+  if (saved.housePct !== undefined) document.getElementById('houseInput').value = saved.housePct;
+  if (saved.carPct   !== undefined) document.getElementById('carInput').value   = saved.carPct;
+  if (saved.consum   !== undefined) document.getElementById('consumInput').value = saved.consum;
+} catch(e){}
+
+setupPlusMinus('houseInput','houseMinus','housePlus', 0,100,1, calculate);
+setupPlusMinus('carInput',  'carMinus',  'carPlus',   0,100,1, calculate);
+setupPlusMinus('consumInput','consumMinus','consumPlus', 0,50,0.1, calculate);
+
+setupLongPress('houseMinus','houseInput',-1,0,100);
+setupLongPress('housePlus', 'houseInput', 1,0,100);
+setupLongPress('carMinus',  'carInput',  -1,0,100);
+setupLongPress('carPlus',   'carInput',   1,0,100);
+
+// Focus effects
+['houseInput','houseMinus','housePlus'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('focus', ()=>document.getElementById('houseCard').classList.add('focused'));
+  el.addEventListener('blur',  ()=>setTimeout(()=>document.getElementById('houseCard').classList.remove('focused'),100));
+});
+['carInput','carMinus','carPlus'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('focus', ()=>document.getElementById('carCard').classList.add('focused'));
+  el.addEventListener('blur',  ()=>setTimeout(()=>document.getElementById('carCard').classList.remove('focused'),100));
+});
+
+// Settings
+document.getElementById('settingsToggle').addEventListener('click', () => {
+  const panel = document.getElementById('settingsPanel');
+  const btn = document.getElementById('settingsToggle');
+  const open = panel.classList.toggle('open');
+  btn.classList.toggle('active', open);
+  if (!open) saveConfig();
+});
+document.querySelectorAll('.setting-input').forEach(el => el.addEventListener('change', saveConfig));
+
+// OCR buttons
+document.getElementById('ocrHouseBtn').addEventListener('click', () => { openOcrModal('house'); });
+document.getElementById('ocrCarBtn').addEventListener('click',   () => { openOcrModal('car'); });
+document.getElementById('modalClose').addEventListener('click', closeOcrModal);
+document.getElementById('ocrModal').addEventListener('click', (e) => { if(e.target===document.getElementById('ocrModal')) closeOcrModal(); });
+
+// Drop zone
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('click', () => {
+  const input = currentOcrTarget==='car' ? document.getElementById('ocrFileInputCar') : document.getElementById('ocrFileInput');
+  input.click();
+});
+
+document.getElementById('ocrFileInput').addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+document.getElementById('ocrFileInputCar').addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+
+dropZone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e)=>{ e.preventDefault(); dropZone.classList.remove('dragover'); handleImageFile(e.dataTransfer.files[0]); });
+
+// Manual OCR apply
+document.getElementById('applyManualBtn').addEventListener('click', () => {
+  applyOcrValue(document.getElementById('manualOcrInput').value);
+});
+document.getElementById('manualOcrInput').addEventListener('keydown', (e) => {
+  if (e.key==='Enter') applyOcrValue(document.getElementById('manualOcrInput').value);
+});
+
+// Share Target — check URL params on load
+const urlParams = new URLSearchParams(window.location.search);
+const sharedText = urlParams.get('shared_text') || urlParams.get('text');
+if (sharedText) {
+  setTimeout(() => handleSharedText(decodeURIComponent(sharedText)), 500);
+}
+
+// Clipboard share fallback — check if app was opened via share
+if (navigator.share && window.location.hash === '#shared') {
+  navigator.clipboard.readText().then(text => { if(text) handleSharedText(text); }).catch(()=>{});
+}
+
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+});
+document.getElementById('dismissBanner').addEventListener('click', () => {
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+calculate();
+</script>
+</body>
+</html>

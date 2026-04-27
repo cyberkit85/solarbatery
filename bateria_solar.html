@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bateria Solar">
+<meta name="theme-color" content="#0a1628">
+<title>⚡ Bateria Solar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080f1e;
+    --surface: #0d1a2e;
+    --surface2: #112240;
+    --border: #1e3a5f;
+    --accent: #00d4ff;
+    --accent2: #00ff88;
+    --accent3: #ffaa00;
+    --danger: #ff4444;
+    --text: #e8f4ff;
+    --muted: #5a7a9a;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .settings-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--mono);
+    transition: all 0.2s;
+  }
+  .settings-btn:active { transform: scale(0.95); }
+  .settings-btn.active { color: var(--accent); border-color: var(--accent); }
+
+  /* ── QUICK LINKS ── */
+  .quick-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: var(--mono);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .quick-link:active { transform: scale(0.97); }
+  .quick-link .ql-icon { font-size: 16px; }
+  .quick-link .ql-label { line-height: 1.2; }
+  .quick-link .ql-name { color: var(--text); font-size: 12px; font-weight: 700; font-family: var(--sans); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    padding: 16px 16px 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── INPUT CARD ── */
+  .input-cards {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .input-card.focused { border-color: var(--accent); }
+  .input-card.car-card.focused { border-color: var(--accent2); }
+  .input-card.house-card.focused { border-color: var(--accent); }
+  .input-card.consumption-card.focused { border-color: var(--accent3); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .card-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .card-unit {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-pm {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .btn-pm:active {
+    transform: scale(0.9);
+    background: var(--border);
+  }
+
+  .house-card .btn-pm:active { background: rgba(0,212,255,0.2); border-color: var(--accent); }
+  .car-card .btn-pm:active { background: rgba(0,255,136,0.2); border-color: var(--accent2); }
+  .consumption-card .btn-pm:active { background: rgba(255,170,0,0.2); border-color: var(--accent3); }
+
+  .value-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    height: 54px;
+    outline: none;
+    width: 100%;
+    -moz-appearance: textfield;
+  }
+
+  .value-input::-webkit-inner-spin-button,
+  .value-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .house-card .value-input:focus { border-color: var(--accent); color: var(--accent); }
+  .car-card .value-input:focus { border-color: var(--accent2); color: var(--accent2); }
+  .consumption-card .value-input:focus { border-color: var(--accent3); color: var(--accent3); }
+
+  /* Mini bar below input */
+  .mini-bar-wrap {
+    margin-top: 10px;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .house-card .mini-bar-fill { background: linear-gradient(90deg, var(--accent), #0066ff); }
+  .car-card .mini-bar-fill { background: linear-gradient(90deg, var(--accent2), #00aa55); }
+
+  /* ── RESULT ── */
+  .result-section {
+    padding: 12px 16px 0;
+  }
+
+  .result-card {
+    background: linear-gradient(135deg, #0a1628 0%, #0d2444 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .result-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .result-status {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-family: var(--mono);
+  }
+
+  .status-ok { background: rgba(0,255,136,0.15); color: var(--accent2); border: 1px solid rgba(0,255,136,0.3); }
+  .status-partial { background: rgba(255,170,0,0.15); color: var(--accent3); border: 1px solid rgba(255,170,0,0.3); }
+  .status-none { background: rgba(255,68,68,0.15); color: var(--danger); border: 1px solid rgba(255,68,68,0.3); }
+
+  .result-big {
+    font-size: 72px;
+    font-weight: 800;
+    font-family: var(--mono);
+    line-height: 1;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+  }
+
+  .result-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 16px;
+  }
+
+  /* Car battery bar */
+  .car-battery-wrap {
+    background: var(--surface2);
+    border-radius: 8px;
+    height: 28px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .car-battery-current {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    border-radius: 7px 0 0 7px;
+    background: rgba(0,255,136,0.25);
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .car-battery-added {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--accent2), #00cc66);
+    border-radius: 0 7px 7px 0;
+    transition: left 0.5s cubic-bezier(0.4,0,0.2,1), width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .car-battery-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    z-index: 1;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .battery-legend {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
+
+  /* House battery bar */
+  .house-bar-section {
+    padding: 12px 16px 0;
+  }
+
+  .house-bar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+  }
+
+  .house-bar-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .house-battery-wrap {
+    height: 24px;
+    background: var(--surface2);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+
+  .house-bat-current {
+    position: absolute;
+    top:0; left:0; bottom:0;
+    background: linear-gradient(90deg, var(--accent), #0088cc);
+    border-radius: 5px 0 0 5px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .house-bat-used {
+    position: absolute;
+    top:0; bottom:0;
+    background: rgba(255,170,0,0.4);
+    transition: left 0.5s, width 0.5s;
+  }
+
+  .house-bat-reserve {
+    position: absolute;
+    top:0; right:0; bottom:0;
+    background: rgba(255,68,68,0.3);
+    border-left: 1px dashed rgba(255,68,68,0.5);
+    transition: width 0.5s;
+  }
+
+  .house-bat-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    z-index: 1;
+  }
+
+  .house-bar-legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .house-stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .house-stat {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+  }
+
+  .house-stat span {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* ── SETTINGS PANEL ── */
+  .settings-panel {
+    display: none;
+    padding: 0 16px;
+    margin-top: 12px;
+  }
+
+  .settings-panel.open { display: block; }
+
+  .settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .settings-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--accent);
+    font-family: var(--mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .setting-row:last-child { border-bottom: none; }
+
+  .setting-name {
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .setting-desc {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .setting-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    width: 80px;
+    padding: 6px;
+    outline: none;
+  }
+
+  .setting-input:focus { border-color: var(--accent); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 20px 16px 0;
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.6;
+  }
+
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .charging-anim {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  /* Install banner */
+  .install-banner {
+    margin: 12px 16px 0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,255,136,0.1));
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .install-banner-text {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .install-banner-text strong { color: var(--accent); }
+
+  .install-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--sans);
+    flex-shrink: 0;
+  }
+
+  .install-btn:active { transform: scale(0.95); }
+
+  .dismiss-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-icon">⚡</div>
+      <div>
+        <div class="logo-text">Bateria Solar</div>
+        <div class="logo-sub">Aiko 610W · Deye 5K</div>
+      </div>
+    </div>
+    <button class="settings-btn" id="settingsToggle">⚙ CONFIG</button>
+  </div>
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="installBanner" style="display:none;">
+    <div class="install-banner-text">
+      <strong>Instalar app</strong><br>
+      Adicionar ao ecrã inicial para acesso rápido
+    </div>
+    <button class="install-btn" id="installBtn">Instalar</button>
+    <button class="dismiss-btn" id="dismissBanner">✕</button>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links">
+    <a class="quick-link" href="https://www.ford.com/fordpass/fordpass-app/" target="_blank">
+      <span class="ql-icon">🚗</span>
+      <div class="ql-label">
+        <div class="ql-name">FordPass</div>
+        <span>ver % carro</span>
+      </div>
+    </a>
+    <a class="quick-link" href="https://home.solarmanpv.com/" target="_blank">
+      <span class="ql-icon">☀️</span>
+      <div class="ql-label">
+        <div class="ql-name">SolarMan</div>
+        <span>ver % bateria casa</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-card">
+      <h3>⚙ Configuração do sistema</h3>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Bateria casa</div>
+          <div class="setting-desc">Capacidade total</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_houseCap" value="16" step="0.1"> kWh
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Painéis Aiko</div>
+          <div class="setting-desc">Quantidade × 610W</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_panels" value="9"> un
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Potência painel</div>
+          <div class="setting-desc">Aiko</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_panelW" value="610"> W
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Inversor Deye</div>
+          <div class="setting-desc">Potência máxima</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_deye" value="5" step="0.1"> kW
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Bateria carro</div>
+          <div class="setting-desc">Capacidade total</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_carCap" value="14.4" step="0.1"> kWh
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-name">Reserva mínima</div>
+          <div class="setting-desc">% mínima a manter</div>
+        </div>
+        <input class="setting-input" type="number" id="cfg_reserve" value="30"> %
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section-label">INSERIR VALORES ATUAIS</div>
+
+  <div class="input-cards">
+
+    <!-- Casa -->
+    <div class="input-card house-card" id="houseCard">
+      <div class="card-top">
+        <div class="card-label">
+          <span class="card-icon">🏠</span>
+          Bateria Casa
+        </div>
+        <span class="card-unit" id="houseKwh">— kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="houseMinus">−</button>
+        <input class="value-input" type="number" id="houseInput" value="80" min="0" max="100" inputmode="numeric">
+        <button class="btn-pm" id="housePlus">+</button>
+      </div>
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-fill" id="houseMiniBar" style="width:80%"></div>
+      </div>
+    </div>
+
+    <!-- Carro -->
+    <div class="input-card car-card" id="carCard">
+      <div class="card-top">
+        <div class="card-label">
+          <span class="card-icon">🔋</span>
+          Bateria Carro
+        </div>
+        <span class="card-unit" id="carKwh">— kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="carMinus">−</button>
+        <input class="value-input" type="number" id="carInput" value="20" min="0" max="100" inputmode="numeric">
+        <button class="btn-pm" id="carPlus">+</button>
+      </div>
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-fill" id="carMiniBar" style="width:20%; background: linear-gradient(90deg, var(--accent2), #00aa55);"></div>
+      </div>
+    </div>
+
+    <!-- Consumo casa -->
+    <div class="input-card consumption-card" id="consumCard">
+      <div class="card-top">
+        <div class="card-label">
+          <span class="card-icon">🏡</span>
+          Consumo Casa Previsto
+        </div>
+        <span class="card-unit">kWh</span>
+      </div>
+      <div class="input-row">
+        <button class="btn-pm" id="consumMinus">−</button>
+        <input class="value-input" type="number" id="consumInput" value="0.2" min="0" max="50" step="0.1" inputmode="decimal">
+        <button class="btn-pm" id="consumPlus">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-section">
+    <div class="result-card">
+      <div class="result-top">
+        <div>
+          <div class="result-label">Bateria carro após carga</div>
+        </div>
+        <div class="result-status status-ok" id="statusBadge">✓ COMPLETA</div>
+      </div>
+
+      <div class="result-big" id="resultPct">—%</div>
+      <div class="result-sub" id="resultSub">—</div>
+
+      <!-- Car battery bar -->
+      <div class="car-battery-wrap">
+        <div class="car-battery-current" id="carBatCurrent"></div>
+        <div class="car-battery-added" id="carBatAdded"></div>
+        <div class="car-battery-label" id="carBatLabel"></div>
+      </div>
+      <div class="battery-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(0,255,136,0.3);"></div>
+          Atual
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--accent2);"></div>
+          A adicionar
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="stat1">—</div>
+          <div class="stat-label">kWh<br>transferidos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat2">—</div>
+          <div class="stat-label">% casa<br>após carga</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat3">—</div>
+          <div class="stat-label">kWh<br>livres casa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOUSE BAR -->
+  <div class="house-bar-section">
+    <div class="house-bar-card">
+      <div class="house-bar-title">🏠 Bateria casa — detalhe</div>
+      <div class="house-battery-wrap">
+        <div class="house-bat-current" id="houseBatCurrent"></div>
+        <div class="house-bat-used" id="houseBatUsed"></div>
+        <div class="house-bat-reserve" id="houseBatReserve"></div>
+        <div class="house-bat-label" id="houseBatLabel"></div>
+      </div>
+      <div class="battery-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--accent);"></div>
+          Energia total
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(255,170,0,0.5);"></div>
+          Consumo + carga
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(255,68,68,0.4);"></div>
+          Reserva 30%
+        </div>
+      </div>
+      <div class="house-stat-row">
+        <div class="house-stat">Total: <span id="hs_total">—</span></div>
+        <div class="house-stat">Disponível: <span id="hs_avail">—</span></div>
+        <div class="house-stat">Reserva: <span id="hs_reserve">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    9 × Aiko 610W = 5.49 kW · Inversor Deye 5K<br>
+    Bateria casa 16 kWh · Plug-in híbrido 14.4 kWh
+    <br><br>
+    <span style="opacity:0.4">guardar no ecrã inicial para acesso rápido</span>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────
+const cfg = {
+  houseCap: 16,
+  panels: 9,
+  panelW: 610,
+  deye: 5,
+  carCap: 14.4,
+  reserve: 30
+};
+
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem('bateriaConfig');
+    if (saved) Object.assign(cfg, JSON.parse(saved));
+  } catch(e) {}
+  Object.keys(cfg).forEach(k => {
+    const el = document.getElementById('cfg_' + k);
+    if (el) el.value = cfg[k];
+  });
+}
+
+function saveConfig() {
+  Object.keys(cfg).forEach(k => {
+    const el = document.getElementById('cfg_' + k);
+    if (el) cfg[k] = parseFloat(el.value) || cfg[k];
+  });
+  try { localStorage.setItem('bateriaConfig', JSON.stringify(cfg)); } catch(e) {}
+  calculate();
+}
+
+// ── INPUTS ──────────────────────────────────────────────────────────────
+function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+function r2(v) { return Math.round(v * 100) / 100; }
+
+function setupPlusMinus(inputId, minusId, plusId, min, max, step, onchange) {
+  const inp = document.getElementById(inputId);
+  const minus = document.getElementById(minusId);
+  const plus = document.getElementById(plusId);
+
+  minus.addEventListener('click', () => {
+    inp.value = r2(clamp(r2(parseFloat(inp.value || 0) - step), min, max));
+    onchange();
+  });
+  plus.addEventListener('click', () => {
+    inp.value = r2(clamp(r2(parseFloat(inp.value || 0) + step), min, max));
+    onchange();
+  });
+  inp.addEventListener('input', onchange);
+  inp.addEventListener('blur', () => {
+    inp.value = r2(clamp(parseFloat(inp.value || 0), min, max));
+    onchange();
+  });
+  inp.addEventListener('focus', () => inp.select());
+}
+
+// Long-press for +/-
+function setupLongPress(btnId, inputId, delta, min, max) {
+  const btn = document.getElementById(btnId);
+  const inp = document.getElementById(inputId);
+  let interval;
+  let timeout;
+
+  function start() {
+    timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        inp.value = clamp(parseFloat(inp.value || 0) + delta, min, max);
+        calculate();
+      }, 80);
+    }, 400);
+  }
+
+  function stop() {
+    clearTimeout(timeout);
+    clearInterval(interval);
+  }
+
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('touchend', stop);
+}
+
+// ── CALCULATE ───────────────────────────────────────────────────────────
+function calculate() {
+  const housePct = clamp(parseFloat(document.getElementById('houseInput').value) || 0, 0, 100);
+  const carPct   = clamp(parseFloat(document.getElementById('carInput').value) || 0, 0, 100);
+  const consum   = clamp(parseFloat(document.getElementById('consumInput').value) || 0, 0, 999);
+
+  // Derived from config
+  const houseCap  = cfg.houseCap;
+  const carCap    = cfg.carCap;
+  const reservePct = cfg.reserve;
+
+  const houseEnergy   = houseCap * housePct / 100;
+  const reserveEnergy = houseCap * reservePct / 100;
+  const carEnergy     = carCap * carPct / 100;
+  const carFree       = carCap - carEnergy;
+
+  const availableForCar = Math.max(0, houseEnergy - reserveEnergy - consum);
+  const transferred     = Math.min(availableForCar, carFree);
+  const finalCarPct     = Math.min(100, carPct + (transferred / carCap * 100));
+  const houseAfterPct   = Math.max(reservePct, (houseEnergy - consum - transferred) / houseCap * 100);
+  const houseAfterKwh   = houseCap * houseAfterPct / 100;
+
+  // Update house kWh label
+  document.getElementById('houseKwh').textContent = houseEnergy.toFixed(1) + ' kWh';
+  document.getElementById('carKwh').textContent = carEnergy.toFixed(1) + ' kWh';
+
+  // Update mini bars
+  document.getElementById('houseMiniBar').style.width = housePct + '%';
+  document.getElementById('carMiniBar').style.width = carPct + '%';
+
+  // Result big number
+  const resultEl = document.getElementById('resultPct');
+  resultEl.textContent = finalCarPct.toFixed(1) + '%';
+
+  // Color by level
+  if (finalCarPct >= 80) resultEl.style.color = 'var(--accent2)';
+  else if (finalCarPct >= 50) resultEl.style.color = 'var(--accent)';
+  else if (finalCarPct >= 30) resultEl.style.color = 'var(--accent3)';
+  else resultEl.style.color = 'var(--danger)';
+
+  // Sub text
+  document.getElementById('resultSub').textContent =
+    transferred.toFixed(2) + ' kWh adicionados · ' + carEnergy.toFixed(1) + ' → ' + (carEnergy + transferred).toFixed(1) + ' kWh';
+
+  // Status badge
+  const badge = document.getElementById('statusBadge');
+  if (availableForCar <= 0) {
+    badge.textContent = '✕ SEM ENERGIA';
+    badge.className = 'result-status status-none';
+  } else if (transferred >= carFree - 0.01) {
+    badge.textContent = '✓ COMPLETA';
+    badge.className = 'result-status status-ok';
+  } else {
+    badge.textContent = '⚡ PARCIAL';
+    badge.className = 'result-status status-partial';
+  }
+
+  // Car battery bar
+  const curW = carPct;
+  const addW = (transferred / carCap * 100);
+  document.getElementById('carBatCurrent').style.width = curW + '%';
+  document.getElementById('carBatAdded').style.left = curW + '%';
+  document.getElementById('carBatAdded').style.width = addW + '%';
+  document.getElementById('carBatLabel').textContent =
+    carPct.toFixed(0) + '% → ' + finalCarPct.toFixed(1) + '%';
+
+  // Stats
+  document.getElementById('stat1').textContent = transferred.toFixed(2);
+  document.getElementById('stat2').textContent = houseAfterPct.toFixed(1) + '%';
+  document.getElementById('stat3').textContent = houseAfterKwh.toFixed(2);
+
+  // House bar
+  document.getElementById('houseBatCurrent').style.width = housePct + '%';
+
+  // consumed band (consum + transferred) as % of houseCap
+  const consumPct2 = (consum / houseCap * 100);
+  const transferPct = (transferred / houseCap * 100);
+  const usedBandStart = housePct - consumPct2 - transferPct;
+  const usedBandW = consumPct2 + transferPct;
+  if (usedBandW > 0 && usedBandStart >= 0) {
+    document.getElementById('houseBatUsed').style.left = usedBandStart + '%';
+    document.getElementById('houseBatUsed').style.width = usedBandW + '%';
+  } else {
+    document.getElementById('houseBatUsed').style.width = '0';
+  }
+
+  document.getElementById('houseBatReserve').style.width = reservePct + '%';
+  document.getElementById('houseBatLabel').textContent =
+    housePct.toFixed(0) + '% → ' + houseAfterPct.toFixed(1) + '%';
+
+  document.getElementById('hs_total').textContent = houseEnergy.toFixed(2) + ' kWh';
+  document.getElementById('hs_avail').textContent = availableForCar.toFixed(2) + ' kWh';
+  document.getElementById('hs_reserve').textContent = reserveEnergy.toFixed(2) + ' kWh';
+
+  // Save inputs
+  try {
+    localStorage.setItem('bateriaInputs', JSON.stringify({ housePct, carPct, consum }));
+  } catch(e) {}
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+loadConfig();
+
+// Load saved inputs
+try {
+  const saved = JSON.parse(localStorage.getItem('bateriaInputs') || '{}');
+  if (saved.housePct !== undefined) document.getElementById('houseInput').value = saved.housePct;
+  if (saved.carPct !== undefined) document.getElementById('carInput').value = saved.carPct;
+  if (saved.consum !== undefined) document.getElementById('consumInput').value = saved.consum;
+} catch(e) {}
+
+setupPlusMinus('houseInput', 'houseMinus', 'housePlus', 0, 100, 1, calculate);
+setupPlusMinus('carInput', 'carMinus', 'carPlus', 0, 100, 1, calculate);
+setupPlusMinus('consumInput', 'consumMinus', 'consumPlus', 0, 50, 0.1, calculate);
+
+setupLongPress('houseMinus', 'houseInput', -1, 0, 100);
+setupLongPress('housePlus', 'houseInput', 1, 0, 100);
+setupLongPress('carMinus', 'carInput', -1, 0, 100);
+setupLongPress('carPlus', 'carInput', 1, 0, 100);
+
+// Focus effects
+['houseInput', 'houseMinus', 'housePlus'].forEach(id => {
+  document.getElementById(id).addEventListener('focus', () => document.getElementById('houseCard').classList.add('focused'));
+  document.getElementById(id).addEventListener('blur', () => setTimeout(() => document.getElementById('houseCard').classList.remove('focused'), 100));
+});
+
+['carInput', 'carMinus', 'carPlus'].forEach(id => {
+  document.getElementById(id).addEventListener('focus', () => document.getElementById('carCard').classList.add('focused'));
+  document.getElementById(id).addEventListener('blur', () => setTimeout(() => document.getElementById('carCard').classList.remove('focused'), 100));
+});
+
+// Settings
+document.getElementById('settingsToggle').addEventListener('click', () => {
+  const panel = document.getElementById('settingsPanel');
+  const btn = document.getElementById('settingsToggle');
+  const open = panel.classList.toggle('open');
+  btn.classList.toggle('active', open);
+  if (!open) saveConfig();
+});
+
+document.querySelectorAll('.setting-input').forEach(el => {
+  el.addEventListener('change', saveConfig);
+});
+
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+document.getElementById('dismissBanner').addEventListener('click', () => {
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+calculate();
+</script>
+</body>
+</html>
