@@ -1182,6 +1182,27 @@ if ('serviceWorker' in navigator) {
 })();
 
 
+
+// ── ABRIR APPS ────────────────────────────────────────────────────────
+function isPWA() {
+  return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+}
+function isAndroid() {
+  return /android/i.test(navigator.userAgent);
+}
+function openApp(packageId, fallbackUrl) {
+  if (!isAndroid()) {
+    window.open(fallbackUrl, '_blank');
+    return;
+  }
+  const appLinks = {
+    'com.deyesolar':     'https://solar.deyeinverter.com/',
+    'com.ford.fordpass': 'https://fordpass.com/'
+  };
+  window.open(appLinks[packageId] || fallbackUrl, '_blank');
+}
+
 </script>
 </body>
 </html>
